@@ -1,0 +1,22 @@
+{
+  "name": "farmadom",
+  "version": "1.0.0",
+  "description": "Sistema de Saúde Domiciliar para Angola",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:*",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm-run-all build:*",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": ["saude", "farmacia", "angola"],
+  "author": "FarmaDom Team",
+  "license": "MIT"
+}
