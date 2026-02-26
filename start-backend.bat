@@ -14,15 +14,15 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [2/3] Executando scripts SQL...
+echo [2/3] Verificando configuracao do banco de dados...
 echo.
-echo Por favor, execute manualmente o arquivo:
-echo database\setup_chat_video.sql
+echo Usando MySQL Remoto:
+echo   Host: 192.185.131.80:3306
+echo   Database: ononam25_fdom
 echo.
-echo No MySQL Workbench ou linha de comando:
-echo mysql -u root -p farmadom ^< database\setup_chat_video.sql
+echo IMPORTANTE: Certifique-se de que o schema foi importado!
+echo Para importar, execute: import-schema-remote.bat
 echo.
-echo Pressione qualquer tecla apos executar o SQL...
 pause
 
 echo.

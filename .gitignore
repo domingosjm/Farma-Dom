@@ -11,6 +11,9 @@ __pycache__/
 .env.local
 .env.*.local
 
+# Credenciais sensíveis
+DATABASE-CREDENTIALS.md
+
 # Logs
 *.log
 npm-debug.log*

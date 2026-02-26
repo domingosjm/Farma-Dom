@@ -8,12 +8,8 @@
 SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
 
--- Criar banco de dados se não existir
-CREATE DATABASE IF NOT EXISTS farmadom
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE farmadom;
+-- Usar banco de dados existente (sem CREATE DATABASE)
+USE ononam25_fdom;
 
 -- ============================================
 -- LIMPAR TABELAS EXISTENTES (ordem reversa de dependências)
@@ -53,7 +49,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 1. TABELA: usuarios
 -- ============================================
 CREATE TABLE usuarios (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome_completo VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     telefone VARCHAR(20),
@@ -97,7 +93,7 @@ CREATE TABLE usuarios (
 -- 2. TABELA: farmacias
 -- ============================================
 CREATE TABLE farmacias (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     endereco TEXT,
     cidade VARCHAR(100),
@@ -129,7 +125,7 @@ CREATE TABLE farmacias (
 -- 3. TABELA: hospitais
 -- ============================================
 CREATE TABLE hospitais (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     endereco TEXT,
     cidade VARCHAR(100),
@@ -149,7 +145,7 @@ CREATE TABLE hospitais (
 -- 4. TABELA: empresas_transporte
 -- ============================================
 CREATE TABLE empresas_transporte (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     endereco TEXT,
     cidade VARCHAR(100),
@@ -166,7 +162,7 @@ CREATE TABLE empresas_transporte (
 -- 5. TABELA: profissionais_saude
 -- ============================================
 CREATE TABLE profissionais_saude (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     usuario_id CHAR(36) NOT NULL,
     especialidade VARCHAR(100),
     numero_ordem VARCHAR(50),
@@ -193,7 +189,7 @@ CREATE TABLE profissionais_saude (
 -- 6. TABELA: consultas
 -- ============================================
 CREATE TABLE consultas (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     paciente_id CHAR(36) NOT NULL,
     medico_id CHAR(36),
     tipo_consulta ENUM('presencial', 'video', 'audio', 'chat') NOT NULL,
@@ -229,7 +225,7 @@ CREATE TABLE consultas (
 -- 7. TABELA: consultas_signals (WebRTC)
 -- ============================================
 CREATE TABLE consultas_signals (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     consulta_id CHAR(36) NOT NULL,
     user_id CHAR(36) NOT NULL,
     signal_type VARCHAR(50) NOT NULL,
@@ -245,7 +241,7 @@ CREATE TABLE consultas_signals (
 -- 8. TABELA: mensagens_chat
 -- ============================================
 CREATE TABLE mensagens_chat (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     consulta_id CHAR(36) NOT NULL,
     remetente_id CHAR(36) NOT NULL,
     mensagem TEXT NOT NULL,
@@ -279,7 +275,7 @@ CREATE TABLE usuarios_online (
 -- 10. TABELA: medicamentos
 -- ============================================
 CREATE TABLE medicamentos (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     principio_ativo VARCHAR(255),
     categoria VARCHAR(100),
@@ -306,7 +302,7 @@ CREATE TABLE medicamentos (
 -- 11. TABELA: pacotes_saude
 -- ============================================
 CREATE TABLE pacotes_saude (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
     tipo VARCHAR(50),
@@ -324,7 +320,7 @@ CREATE TABLE pacotes_saude (
 -- 12. TABELA: assinaturas_pacotes
 -- ============================================
 CREATE TABLE assinaturas_pacotes (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     usuario_id CHAR(36) NOT NULL,
     pacote_id CHAR(36) NOT NULL,
     data_inicio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -346,7 +342,7 @@ CREATE TABLE assinaturas_pacotes (
 -- 13. TABELA: pagamentos_assinaturas
 -- ============================================
 CREATE TABLE pagamentos_assinaturas (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     assinatura_id CHAR(36) NOT NULL,
     usuario_id CHAR(36) NOT NULL,
     pacote_id CHAR(36),
@@ -367,7 +363,7 @@ CREATE TABLE pagamentos_assinaturas (
 -- 14. TABELA: pedidos
 -- ============================================
 CREATE TABLE pedidos (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     usuario_id CHAR(36) NOT NULL,
     farmacia_id CHAR(36),
     numero_pedido VARCHAR(50) UNIQUE NOT NULL,
@@ -407,7 +403,7 @@ CREATE TABLE pedidos (
 -- 15. TABELA: itens_pedido
 -- ============================================
 CREATE TABLE itens_pedido (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     pedido_id CHAR(36) NOT NULL,
     medicamento_id CHAR(36) NOT NULL,
     quantidade INT NOT NULL,
@@ -424,7 +420,7 @@ CREATE TABLE itens_pedido (
 -- 16. TABELA: farmacia_estoque
 -- ============================================
 CREATE TABLE farmacia_estoque (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     farmacia_id CHAR(36) NOT NULL,
     medicamento_id CHAR(36) NOT NULL,
     quantidade INT DEFAULT 0,
@@ -444,7 +440,7 @@ CREATE TABLE farmacia_estoque (
 -- 17. TABELA: fila_rodizio
 -- ============================================
 CREATE TABLE fila_rodizio (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     pedido_id CHAR(36) NOT NULL,
     farmacia_id CHAR(36) NOT NULL,
     posicao INT NOT NULL,
@@ -475,11 +471,11 @@ CREATE TABLE rodizio_config (
 -- 19. TABELA: receitas_digitais
 -- ============================================
 CREATE TABLE receitas_digitais (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     consulta_id CHAR(36),
     medico_id CHAR(36) NOT NULL,
     paciente_id CHAR(36) NOT NULL,
-    codigo_verificacao CHAR(36) DEFAULT (UUID()),
+    codigo_verificacao CHAR(36),
     qr_code_hash VARCHAR(255),
     validade TIMESTAMP NULL,
     status ENUM('ativa', 'utilizada', 'expirada', 'cancelada') DEFAULT 'ativa',
@@ -501,7 +497,7 @@ CREATE TABLE receitas_digitais (
 -- 20. TABELA: itens_receita
 -- ============================================
 CREATE TABLE itens_receita (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     receita_id CHAR(36) NOT NULL,
     medicamento_id CHAR(36),
     quantidade INT NOT NULL,
@@ -516,7 +512,7 @@ CREATE TABLE itens_receita (
 -- 21. TABELA: veiculos
 -- ============================================
 CREATE TABLE veiculos (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     empresa_id CHAR(36) NOT NULL,
     placa VARCHAR(20) NOT NULL,
     modelo VARCHAR(100),
@@ -534,7 +530,7 @@ CREATE TABLE veiculos (
 -- 22. TABELA: entregas
 -- ============================================
 CREATE TABLE entregas (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     pedido_id CHAR(36) NOT NULL,
     farmacia_id CHAR(36),
     empresa_transporte_id CHAR(36),
@@ -566,7 +562,7 @@ CREATE TABLE entregas (
 -- 23. TABELA: rastreamento_pedidos
 -- ============================================
 CREATE TABLE rastreamento_pedidos (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     pedido_id CHAR(36) NOT NULL,
     status VARCHAR(50) NOT NULL,
     descricao TEXT,
@@ -580,7 +576,7 @@ CREATE TABLE rastreamento_pedidos (
 -- 24. TABELA: avaliacoes_consultas
 -- ============================================
 CREATE TABLE avaliacoes_consultas (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     consulta_id CHAR(36) NOT NULL,
     nota INT NOT NULL CHECK (nota >= 1 AND nota <= 5),
     comentario TEXT,
@@ -593,7 +589,7 @@ CREATE TABLE avaliacoes_consultas (
 -- 25. TABELA: logs_auditoria
 -- ============================================
 CREATE TABLE logs_auditoria (
-    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id CHAR(36) PRIMARY KEY,
     usuario_id CHAR(36),
     acao VARCHAR(100) NOT NULL,
     detalhes JSON,
@@ -615,6 +611,246 @@ CREATE TABLE comissoes_config (
     descricao TEXT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- TRIGGERS: UUID AUTOMATICO (compatibilidade MySQL 5.7)
+-- ============================================
+DELIMITER //
+
+DROP TRIGGER IF EXISTS before_insert_usuarios //
+CREATE TRIGGER before_insert_usuarios
+BEFORE INSERT ON usuarios
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_farmacias //
+CREATE TRIGGER before_insert_farmacias
+BEFORE INSERT ON farmacias
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_hospitais //
+CREATE TRIGGER before_insert_hospitais
+BEFORE INSERT ON hospitais
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_empresas_transporte //
+CREATE TRIGGER before_insert_empresas_transporte
+BEFORE INSERT ON empresas_transporte
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_profissionais_saude //
+CREATE TRIGGER before_insert_profissionais_saude
+BEFORE INSERT ON profissionais_saude
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_consultas //
+CREATE TRIGGER before_insert_consultas
+BEFORE INSERT ON consultas
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_consultas_signals //
+CREATE TRIGGER before_insert_consultas_signals
+BEFORE INSERT ON consultas_signals
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_mensagens_chat //
+CREATE TRIGGER before_insert_mensagens_chat
+BEFORE INSERT ON mensagens_chat
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_medicamentos //
+CREATE TRIGGER before_insert_medicamentos
+BEFORE INSERT ON medicamentos
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_pacotes_saude //
+CREATE TRIGGER before_insert_pacotes_saude
+BEFORE INSERT ON pacotes_saude
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_assinaturas_pacotes //
+CREATE TRIGGER before_insert_assinaturas_pacotes
+BEFORE INSERT ON assinaturas_pacotes
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_pagamentos_assinaturas //
+CREATE TRIGGER before_insert_pagamentos_assinaturas
+BEFORE INSERT ON pagamentos_assinaturas
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_pedidos //
+CREATE TRIGGER before_insert_pedidos
+BEFORE INSERT ON pedidos
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_itens_pedido //
+CREATE TRIGGER before_insert_itens_pedido
+BEFORE INSERT ON itens_pedido
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_farmacia_estoque //
+CREATE TRIGGER before_insert_farmacia_estoque
+BEFORE INSERT ON farmacia_estoque
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_fila_rodizio //
+CREATE TRIGGER before_insert_fila_rodizio
+BEFORE INSERT ON fila_rodizio
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_receitas_digitais //
+CREATE TRIGGER before_insert_receitas_digitais
+BEFORE INSERT ON receitas_digitais
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+    IF NEW.codigo_verificacao IS NULL OR NEW.codigo_verificacao = '' THEN
+        SET NEW.codigo_verificacao = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_itens_receita //
+CREATE TRIGGER before_insert_itens_receita
+BEFORE INSERT ON itens_receita
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_veiculos //
+CREATE TRIGGER before_insert_veiculos
+BEFORE INSERT ON veiculos
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_entregas //
+CREATE TRIGGER before_insert_entregas
+BEFORE INSERT ON entregas
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_rastreamento_pedidos //
+CREATE TRIGGER before_insert_rastreamento_pedidos
+BEFORE INSERT ON rastreamento_pedidos
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_avaliacoes_consultas //
+CREATE TRIGGER before_insert_avaliacoes_consultas
+BEFORE INSERT ON avaliacoes_consultas
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DROP TRIGGER IF EXISTS before_insert_logs_auditoria //
+CREATE TRIGGER before_insert_logs_auditoria
+BEFORE INSERT ON logs_auditoria
+FOR EACH ROW
+BEGIN
+    IF NEW.id IS NULL OR NEW.id = '' THEN
+        SET NEW.id = UUID();
+    END IF;
+END//
+
+DELIMITER ;
 
 -- ============================================
 -- DADOS INICIAIS (Seed Data)
@@ -800,21 +1036,21 @@ SELECT 'f1000000-0000-0000-0000-000000000001', id, FLOOR(RAND() * 50) + 10, prec
 FROM medicamentos;
 
 -- ============================================
--- EVENT SCHEDULERS (opcional - para limpeza automática)
+-- EVENT SCHEDULERS (opcional - requer privilegio SUPER)
 -- ============================================
--- Ativar o scheduler de eventos
-SET GLOBAL event_scheduler = ON;
-
--- Event para limpar sinais WebRTC antigos (mais de 1 hora)
-DELIMITER //
-CREATE EVENT IF NOT EXISTS cleanup_old_signals
-ON SCHEDULE EVERY 1 HOUR
-DO
-BEGIN
-    DELETE FROM consultas_signals WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 HOUR);
-    DELETE FROM usuarios_online WHERE ultima_atividade < DATE_SUB(NOW(), INTERVAL 30 MINUTE);
-END//
-DELIMITER ;
+-- Removido do script principal para evitar erro de permissao.
+-- Se tiver privilegio, execute manualmente:
+-- SET GLOBAL event_scheduler = ON;
+--
+-- DELIMITER //
+-- CREATE EVENT IF NOT EXISTS cleanup_old_signals
+-- ON SCHEDULE EVERY 1 HOUR
+-- DO
+-- BEGIN
+--     DELETE FROM consultas_signals WHERE created_at < DATE_SUB(NOW(), INTERVAL 1 HOUR);
+--     DELETE FROM usuarios_online WHERE ultima_atividade < DATE_SUB(NOW(), INTERVAL 30 MINUTE);
+-- END//
+-- DELIMITER ;
 
 -- ============================================
 -- VERIFICAÇÃO FINAL
@@ -824,5 +1060,5 @@ SELECT 'Schema FarmaDom criado com sucesso!' as status;
 -- Listar todas as tabelas criadas
 SELECT table_name as 'Tabelas Criadas', table_rows as 'Registros'
 FROM information_schema.tables 
-WHERE table_schema = 'farmadom' 
+WHERE table_schema = 'ononam25_fdom' 
 ORDER BY table_name;
