@@ -34,6 +34,7 @@ import rodizioRouter from './routes/rodizio';
 
 const app = express();
 const httpServer = createServer(app);
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 
 // Security middleware
 app.use(helmet());
@@ -103,22 +104,24 @@ app.use((req: Request, res: Response) => {
 // Centralized error handler
 app.use(errorHandler);
 
-// Start server
-const PORT = parseInt(config.PORT as string, 10);
-httpServer.listen(PORT, async () => {
-  console.log('===================================');
-  console.log('  🚀 FarmaDom Backend API v2.0');
-  console.log('===================================');
-  console.log(`  📍 URL: http://localhost:${PORT}`);
-  console.log(`  🌍 Ambiente: ${config.NODE_ENV}`);
-  console.log(`  🗄️  DB: PostgreSQL`);
-  console.log('===================================');
+// Start server (skip on Vercel serverless)
+if (!isVercel) {
+  const PORT = parseInt(config.PORT as string, 10);
+  httpServer.listen(PORT, async () => {
+    console.log('===================================');
+    console.log('  🚀 FarmaDom Backend API v2.0');
+    console.log('===================================');
+    console.log(`  📍 URL: http://localhost:${PORT}`);
+    console.log(`  🌍 Ambiente: ${config.NODE_ENV}`);
+    console.log('  🗄️  DB: MySQL');
+    console.log('===================================');
 
-  // Setup Socket.IO
-  setupSocketIO(httpServer);
+    // Setup Socket.IO
+    setupSocketIO(httpServer);
 
-  // Test database connection
-  await testConnection();
-});
+    // Test database connection
+    await testConnection();
+  });
+}
 
 export default app;
